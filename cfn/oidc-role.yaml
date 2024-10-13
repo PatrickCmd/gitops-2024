@@ -30,6 +30,15 @@ Resources:
                 'token.actions.githubusercontent.com:aud': sts.amazonaws.com
       ManagedPolicyArns:
         - 'arn:aws:iam::aws:policy/PowerUserAccess'
+      Policies:  # Adding an inline policy to allow sts:TagSession
+        - PolicyName: GitHubActionsSessionPolicy
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'sts:TagSession'   # Adding permission for sts:TagSession
+                Resource: '*'
 Outputs:
   RoleName:
     Description: 'The name of the IAM role for GitHub Actions'

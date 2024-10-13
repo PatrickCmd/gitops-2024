@@ -1,0 +1,4 @@
+[deploy]
+bucket = 'cfn-terraform-artifacts'
+region = 'us-east-1'
+stack_name = 'TerraformBackendResources'
