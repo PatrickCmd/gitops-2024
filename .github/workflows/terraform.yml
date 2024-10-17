@@ -72,7 +72,7 @@ jobs:
       with:
         aws-region: us-east-1
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # arn:aws:iam::123456789100:role/my-github-actions-role
-        role-session-name: "AWSTerraformInfraGitHubActions"
+        role-session-name: "AWSTerraformInfraPlan"
     
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
@@ -94,8 +94,8 @@ jobs:
     - name: Terraform Plan
       run: terraform plan -input=false
 
-      # On push to $default-branch, build or change infrastructure according to Terraform configuration files
-      # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
-    - name: Terraform Apply
-      if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
-      run: terraform apply -auto-approve -input=false
+    # On push to $default-branch, build or change infrastructure according to Terraform configuration files
+    # Note: It is recommended to set up a required "strict" status check in your repository for "Terraform Cloud". See the documentation on "strict" required status checks for more information: https://help.github.com/en/github/administering-a-repository/types-of-required-status-checks
+    # - name: Terraform Apply
+    #   if: github.ref == 'refs/heads/$default-branch' && github.event_name == 'push'
+    #   run: terraform apply -auto-approve -input=false
