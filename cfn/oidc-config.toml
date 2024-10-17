@@ -1,0 +1,7 @@
+[deploy]
+bucket = 'cfn-terraform-artifacts'
+region = 'us-east-1'
+stack_name = 'GithubOidc'
+
+[parameters]
+Repo = 'PatrickCmd/gitops-2024'
