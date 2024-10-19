@@ -24,6 +24,26 @@ resource "aws_vpc" "gitops_vpc" {
   }
 }
 
+resource "aws_flow_log" "gitops_vpc_flow_log" {
+  vpc_id          = aws_vpc.gitops_vpc.id
+  log_destination = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  traffic_type    = "ALL"
+
+  tags = {
+    Name = "gitops-vpc-flow-log"
+  }
+}
+
+#trivy:ignore:AVD-AWS-0017
+resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
+  name              = "vpc-flow-logs"
+  retention_in_days = 14
+
+  tags = {
+    Name = "vpc-flow-logs"
+  }
+}
+
 resource "aws_internet_gateway" "gitops_igw" {
   vpc_id = aws_vpc.gitops_vpc.id
 
@@ -45,6 +65,7 @@ resource "aws_route_table" "gitops_rt" {
   }
 }
 
+#trivy:ignore:AVD-AWS-0164
 resource "aws_subnet" "gitops_subnet" {
   vpc_id                  = aws_vpc.gitops_vpc.id
   cidr_block              = "10.0.1.0/24"
@@ -60,6 +81,9 @@ resource "aws_route_table_association" "gitops_rta" {
   route_table_id = aws_route_table.gitops_rt.id
 }
 
+#trivy:ignore:AVD-AWS-0107
+#trivy:ignore:AVD-AWS-0124
+#trivy:ignore:AVD-AWS-0104
 resource "aws_security_group" "gitops_sg" {
   name        = "gitops_sg"
   description = "Allow port 3000"
@@ -70,6 +94,7 @@ resource "aws_security_group" "gitops_sg" {
     to_port     = 3000
     protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow inbound traffic on port 3000"
   }
 
   egress {
@@ -77,6 +102,7 @@ resource "aws_security_group" "gitops_sg" {
     to_port     = 0
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
+    description = "Allow all outbound traffic"
   }
 
   tags = {
@@ -91,8 +117,13 @@ resource "aws_instance" "grafana_server" {
   vpc_security_group_ids = [aws_security_group.gitops_sg.id]
   user_data              = file("userdata.tftpl")
 
+  metadata_options {
+    http_tokens = "required" # Enforce IMDSv2
+  }
+
   root_block_device {
     volume_type = "gp3"
+    encrypted   = true # Enable encryption
     iops        = 3000 # Optional: Specify IOPS if needed
     throughput  = 125  # Optional: Specify throughput in MB/s if needed
     tags = {

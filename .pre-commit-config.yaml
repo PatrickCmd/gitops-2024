@@ -4,6 +4,20 @@ repos:
   hooks:
     - id: terraform_fmt
       files: ^terraform/.*\.tf$
+    - id: terraform_validate
+      files: ^terraform/.*\.tf$
+      args:
+        - --env-vars=AWS_DEFAULT_REGION="us-east-1"
     - id: terraform_tflint
       args:
         - --args=--config=__GIT_WORKING_DIR__/terraform/.tflint.hcl
+    # - id: infracost_breakdown
+    #   args:
+    #     - --args=--path=./terraform
+    #     - --hook-config='.projects[].diff.totalMonthlyCost|tonumber <= 10'
+    #     - --hook-config='.currency == "USD"'
+    #   verbose: true # Always show costs
+    - id: terraform_trivy
+      files: ^terraform/
+      args:
+        - --args=--skip-dirs="**/.terraform"
