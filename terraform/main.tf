@@ -92,7 +92,8 @@ resource "aws_instance" "grafana_server" {
   user_data              = file("userdata.tftpl")
 
   tags = {
-    Name = "grafana-server"
+    Name        = "grafana-server"
+    Environment = "Prod"
   }
 }
 
