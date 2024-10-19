@@ -92,6 +92,22 @@ resource "aws_instance" "grafana_server" {
   user_data              = file("userdata.tftpl")
 
   tags = {
-    Name = "grafana-server"
+    Name        = "grafana-server"
+    Environment = "Prod"
+  }
+}
+
+# Terraform checks
+# https://developer.hashicorp.com/terraform/language/checks
+check "grafana_health_check" {
+  data "http" "test_grafana" {
+    url = "http://${aws_instance.grafana_server.public_ip}:3000"
+    retry {
+      attempts = 5
+    }
+  }
+  assert {
+    condition     = data.http.test_grafana.status_code == 200
+    error_message = "Grafana is inaccessible on port 3000."
   }
 }
