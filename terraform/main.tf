@@ -91,9 +91,18 @@ resource "aws_instance" "grafana_server" {
   vpc_security_group_ids = [aws_security_group.gitops_sg.id]
   user_data              = file("userdata.tftpl")
 
+  root_block_device {
+    volume_type = "gp3"
+    iops        = 3000 # Optional: Specify IOPS if needed
+    throughput  = 125  # Optional: Specify throughput in MB/s if needed
+    tags = {
+      Service     = var.service_name
+      Environment = var.environment
+    }
+  }
+
   tags = {
-    Name        = "grafana-server"
-    Environment = "Prod"
+    Name = "grafana-server"
   }
 }
 
