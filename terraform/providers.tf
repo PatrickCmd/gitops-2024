@@ -13,4 +13,10 @@ terraform {
 
 provider "aws" {
   region = var.region
+  default_tags {
+    tags = {
+      Environment = var.environment  # Pass in 'Dev', 'Stage', or 'Prod'
+      Service     = var.service_name # Pass in the name of the service (e.g., 'grafana')
+    }
+  }
 }
