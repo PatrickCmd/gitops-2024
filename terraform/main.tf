@@ -24,15 +24,55 @@ resource "aws_vpc" "gitops_vpc" {
   }
 }
 
+resource "aws_iam_role" "flow_logs_role" {
+  name = "VPCFlowLogsRole"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Action = "sts:AssumeRole",
+      Effect = "Allow",
+      Principal = {
+        Service = "vpc-flow-logs.amazonaws.com"
+      }
+    }]
+  })
+}
+
+resource "aws_iam_role_policy" "flow_logs_policy" {
+  role = aws_iam_role.flow_logs_role.id
+
+  policy = jsonencode({
+    Version = "2012-10-17",
+    Statement = [{
+      Effect = "Allow",
+      Action = [
+        "logs:CreateLogGroup",
+        "logs:CreateLogStream",
+        "logs:PutLogEvents",
+        "logs:DescribeLogGroups",
+        "logs:DescribeLogStreams"
+      ],
+      Resource = "arn:aws:logs:*:*:*"
+    }]
+  })
+}
+
+
+
 resource "aws_flow_log" "gitops_vpc_flow_log" {
-  vpc_id          = aws_vpc.gitops_vpc.id
-  log_destination = aws_cloudwatch_log_group.vpc_flow_logs.arn
-  traffic_type    = "ALL"
+  vpc_id               = aws_vpc.gitops_vpc.id
+  log_destination      = aws_cloudwatch_log_group.vpc_flow_logs.arn
+  log_destination_type = "cloud-watch-logs"
+  traffic_type         = "ALL"
+  iam_role_arn         = aws_iam_role.flow_logs_role.arn # Use iam_role_arn
 
   tags = {
     Name = "gitops-vpc-flow-log"
   }
 }
+
+
 
 #trivy:ignore:AVD-AWS-0017
 resource "aws_cloudwatch_log_group" "vpc_flow_logs" {
