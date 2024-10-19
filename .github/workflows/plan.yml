@@ -1,6 +1,13 @@
-name: 'Terraform Apply'
+name: 'Terraform Plan'
 
-on: workflow_dispatch
+on:
+  push:
+    branches: [ 'main' ]
+  pull_request:
+  workflow_call:
+    secrets:
+      ROLE_TO_ASSUME:
+        required: true
 
 permissions:
   contents: read
@@ -21,9 +28,8 @@ jobs:
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@v4
       with:
-        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # arn:aws:iam::123456789100:role/my-github-actions-role
+        role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
         aws-region: us-east-1
-        role-session-name: "AWSTerraformInfraApply"
     
     - name: Checkout
       uses: actions/checkout@v4
@@ -43,7 +49,3 @@ jobs:
     # Generates an execution plan for Terraform
     - name: Terraform Plan
       run: terraform plan -input=false
-
-    # Apply the Configuration
-    - name: Terraform Apply
-      run: terraform apply -input=false -auto-approve

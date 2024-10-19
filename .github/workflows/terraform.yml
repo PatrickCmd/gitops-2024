@@ -72,7 +72,7 @@ jobs:
       with:
         aws-region: us-east-1
         role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}  # arn:aws:iam::123456789100:role/my-github-actions-role
-        role-session-name: "AWSTerraformInfraPlan"
+        role-session-name: "AWSTerraformInfra"
     
     # Checkout the repository to the GitHub Actions runner
     - name: Checkout
