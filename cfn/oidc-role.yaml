@@ -39,6 +39,28 @@ Resources:
                 Action:
                   - 'sts:TagSession'   # Adding permission for sts:TagSession
                 Resource: '*'
+        - PolicyName: GitHubActionsIamPolicy  # Expanded policy for IAM permissions
+          PolicyDocument:
+            Version: '2012-10-17'
+            Statement:
+              - Effect: Allow
+                Action:
+                  - 'iam:CreateRole'          # Allow creating IAM roles
+                  - 'iam:DeleteRole'          # Allow deleting IAM roles
+                  - 'iam:GetRole'             # Allow reading IAM roles
+                  - 'iam:UpdateRole'          # Allow updating IAM roles
+                  - 'iam:PassRole'            # Allow passing IAM roles to services
+                  - 'iam:TagRole'             # Allow tagging IAM roles
+                  - 'iam:ListAttachedRolePolicies'  # List policies attached to a role
+                  - 'iam:AttachRolePolicy'    # Allow attaching policies to roles
+                  - 'iam:DetachRolePolicy'    # Allow detaching policies from roles
+                  - 'iam:GetRolePolicy'
+                  - 'iam:PutRolePolicy'       # Allow attaching inline policies to roles
+                  - 'iam:DeleteRolePolicy'    # Allow deleting inline policies from roles
+                  - 'iam:ListRoles'           # Allow listing all IAM roles
+                  - 'iam:ListRolePolicies'
+                  - 'iam:ListInstanceProfilesForRole'
+                Resource: !Sub 'arn:aws:iam::${AWS::AccountId}:role/*'  # Apply to all roles in this account
 Outputs:
   RoleName:
     Description: 'The name of the IAM role for GitHub Actions'
