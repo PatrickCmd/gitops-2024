@@ -287,21 +287,20 @@ nothing to commit, working tree clean
 - Include steps to address potential failed checks in pull requests.
 
 - **Policy Compliance**:
-    - Describe Open Policy Agent (OPA) enforcement policies, such as failing if cost > $10.
-    - Provide guidelines for cost review and modification of policies if necessary.
+    - The Open Policy Agent (OPA) enforcement policies have been also applied on pull requets, such as failing if cost > $10.
+    - The `infracost.yml` is run when pull requested is opened against the `main` branch. It creates a PR comment if it `passes` or `fails`.
 
 ---
 
-## 4. Explains Merging Strategy
+## 4. Merging Strategy
    - **Branch Strategy**:
-      - Use feature branches for development; merge to `main` only after successful PR review and pipeline checks.
-      - Describe GitFlow or an alternative branching strategy to manage feature, release, and hotfix branches.
+      - Feature branches are used for development; then merge to `main` only after successful PR review and pipeline checks.
    - **Protected Main Branch**:
-      - Reinforce that `main` is a protected branch, ensuring only approved and tested code reaches production.
+      - The `main` is a protected branch, ensuring only approved and tested code reaches production.
       - Merging requires passing all checks; no direct commits to `main` are allowed.
    - **Human Intervention for `terraform apply`**:
-      - Emphasize that `apply.yml` requires manual approval for production changes.
-      - Describe the process for obtaining approvals, particularly for high-risk infrastructure changes.
+      - The `apply.yml` requires manual approval for production changes.
+      - After merging to the main branch, the user reviews the `plan` actions and then executes the apply action through the `workflow_dispatch` of the apply action.
 
 ---
 
