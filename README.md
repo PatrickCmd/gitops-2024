@@ -274,20 +274,12 @@ See the `pre-commit-config` file [here](./.pre-commit-config.yaml)
 When you a git commit command, the pre-commit has to pass first before the changes are successfully committed.
 
 ```
-trim trailing whitespace.................................................Passed
-fix end of files.........................................................Passed
-check json...........................................(no files to check)Skipped
-check toml...........................................(no files to check)Skipped
-check xml............................................(no files to check)Skipped
-check yaml...........................................(no files to check)Skipped
-debug statements (python)............................(no files to check)Skipped
-check builtin type constructor use...................(no files to check)Skipped
-check for case conflicts.................................................Passed
-check docstring is first.............................(no files to check)Skipped
-detect private key.......................................................Passed
-django-upgrade.......................................(no files to check)Skipped
-djLint formatting for Django.........................(no files to check)Skipped
-djLint linting for Django............................(no files to check)Skipped
+Terraform fmt........................................(no files to check)Skipped
+Terraform validate...................................(no files to check)Skipped
+Terraform validate with tflint.......................(no files to check)Skipped
+Terraform validate with trivy........................(no files to check)Skipped
+On branch readme-rubric
+nothing to commit, working tree clean
 ```
 
 ### Pull Request Requirements
